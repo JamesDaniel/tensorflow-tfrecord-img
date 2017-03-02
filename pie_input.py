@@ -16,7 +16,7 @@ import tensorflow as tf
 
 tf.app.flags.DEFINE_string('train_directory', 'images/train',
                            'Training data directory')
-tf.app.flags.DEFINE_string('validation_directory', 'images/validation/',
+tf.app.flags.DEFINE_string('validation_directory', 'images/validation',
                            'Validation data directory')
 tf.app.flags.DEFINE_string('output_directory', 'out/',
                            'Output data directory')
@@ -30,7 +30,7 @@ tf.app.flags.DEFINE_integer('validation_shards', 2,
 tf.app.flags.DEFINE_integer('num_threads', 2,
                             'Number of threads to preprocess the images.')
 
-tf.app.flags.DEFINE_string('labels_file', '', 'Labels file')
+tf.app.flags.DEFINE_string('labels_file', 'labels.txt', 'Labels file')
 
 FLAGS = tf.app.flags.FLAGS
 
@@ -270,7 +270,7 @@ def _find_image_files(data_dir, labels_file):
     labels: list of integer; each integer identifies the ground truth.
   """
   print('Determining list of input files and labels from %s.' % data_dir)
-  unique_labels = [l.strip() for l in tf.gfile.FastGFile(
+  unique_labels = [l.strip() + '/lights/' for l in tf.gfile.FastGFile(
       labels_file, 'r').readlines()]
 
   labels = []
@@ -282,7 +282,7 @@ def _find_image_files(data_dir, labels_file):
 
   # Construct the list of JPEG files and labels.
   for text in unique_labels:
-    jpeg_file_path = '%s/%s/*' % (data_dir, text)
+    jpeg_file_path = '%s/%s*' % (data_dir, text)
     matching_files = tf.gfile.Glob(jpeg_file_path)
 
     labels.extend([label_index] * len(matching_files))
@@ -331,9 +331,9 @@ def main(unused_argv):
   print('Saving results to %s' % FLAGS.output_directory)
 
   # Run it!
-  _process_dataset('validation', FLAGS.validation_directory + 'lights',
+  _process_dataset('validation', FLAGS.validation_directory,
                    FLAGS.validation_shards, FLAGS.labels_file)
-  _process_dataset('train', FLAGS.train_directory + 'lights',
+  _process_dataset('train', FLAGS.train_directory,
                    FLAGS.train_shards, FLAGS.labels_file)
 
 
