@@ -23,11 +23,11 @@ tf.app.flags.DEFINE_string('output_directory', 'out/',
 
 tf.app.flags.DEFINE_integer('train_shards', 42,
                             'Number of shards in training TFRecord files.')
-tf.app.flags.DEFINE_integer('validation_shards', 11,
+tf.app.flags.DEFINE_integer('validation_shards', 2,
                             'Number of shards in validation TFRecord files.')
 
 
-tf.app.flags.DEFINE_integer('num_threads', 1,
+tf.app.flags.DEFINE_integer('num_threads', 2,
                             'Number of threads to preprocess the images.')
 
 tf.app.flags.DEFINE_string('labels_file', '', 'Labels file')
