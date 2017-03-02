@@ -13,3 +13,5 @@ pip-selfcheck.json
 
 share/
 .idea/
+images/
+out/
