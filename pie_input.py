@@ -23,11 +23,11 @@ tf.app.flags.DEFINE_string('output_directory', 'out/',
 
 tf.app.flags.DEFINE_integer('train_shards', 42,
                             'Number of shards in training TFRecord files.')
-tf.app.flags.DEFINE_integer('validation_shards', 2,
+tf.app.flags.DEFINE_integer('validation_shards', 1,
                             'Number of shards in validation TFRecord files.')
 
 
-tf.app.flags.DEFINE_integer('num_threads', 2,
+tf.app.flags.DEFINE_integer('num_threads', 1,
                             'Number of threads to preprocess the images.')
 
 tf.app.flags.DEFINE_string('labels_file', 'labels.txt', 'Labels file')
@@ -270,7 +270,7 @@ def _find_image_files(data_dir, labels_file):
     labels: list of integer; each integer identifies the ground truth.
   """
   print('Determining list of input files and labels from %s.' % data_dir)
-  unique_labels = [l.strip() + '/lights/' for l in tf.gfile.FastGFile(
+  unique_labels = [l.strip() for l in tf.gfile.FastGFile(
       labels_file, 'r').readlines()]
 
   labels = []
@@ -282,7 +282,7 @@ def _find_image_files(data_dir, labels_file):
 
   # Construct the list of JPEG files and labels.
   for text in unique_labels:
-    jpeg_file_path = '%s/%s*' % (data_dir, text)
+    jpeg_file_path = '%s/%s/*' % (data_dir, text)
     matching_files = tf.gfile.Glob(jpeg_file_path)
 
     labels.extend([label_index] * len(matching_files))
