@@ -55,6 +55,7 @@ def convert_to(data_set, name):
   writer = tf.python_io.TFRecordWriter(filename)
   for index in range(num_examples):
     image_raw = images[index].tostring()
+    print('----------------------- ' + str(int(labels[index])))
     example = tf.train.Example(features=tf.train.Features(feature={
         'height': _int64_feature(rows),
         'width': _int64_feature(cols),
