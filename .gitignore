@@ -13,5 +13,12 @@ pip-selfcheck.json
 
 share/
 .idea/
+
+# PIE dataset with only the light variation subset. Modified with separate_image_files.py
 images/
+
+# for tfrecords. see pie_input.py
 out/
+
+# for images taken from tfrecords. see read_tf_records.py
+output/

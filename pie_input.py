@@ -63,15 +63,11 @@ def _convert_to_example(filename, image_buffer, label, text, height, width):
   image_format = 'JPEG'
 
   example = tf.train.Example(features=tf.train.Features(feature={
-      'image/height': _int64_feature(height),
-      'image/width': _int64_feature(width),
-      'image/colorspace': _bytes_feature(tf.compat.as_bytes(colorspace)),
-      'image/channels': _int64_feature(channels),
-      'image/class/label': _int64_feature(label),
-      'image/class/text': _bytes_feature(tf.compat.as_bytes(text)),
-      'image/format': _bytes_feature(tf.compat.as_bytes(image_format)),
-      'image/filename': _bytes_feature(tf.compat.as_bytes(os.path.basename(filename))),
-      'image/encoded': _bytes_feature(tf.compat.as_bytes(image_buffer))}))
+      'height': _int64_feature(height),
+      'width': _int64_feature(width),
+      'depth': _int64_feature(channels),
+      'label': _int64_feature(label),
+      'image_raw': _bytes_feature(tf.compat.as_bytes(image_buffer))}))
   return example
 
 class ImageCoder(object):

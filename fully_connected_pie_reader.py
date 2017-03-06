@@ -38,10 +38,12 @@ import mnist
 
 # Basic model parameters as external flags.
 FLAGS = None
+IMAGE_SIZE = 28
+IMAGE_PIXELS = 640 * 486 * 3
 
 # Constants used for dealing with the files, matches convert_to_records.
-TRAIN_FILE = 'out/train-00000-of-00001.tfrecords'
-VALIDATION_FILE = 'out/validation-00000-of-00001.tfrecords'
+TRAIN_FILE = 'train-00000-of-00001.tfrecords'
+VALIDATION_FILE = 'validation-00000-of-00001.tfrecords'
 
 
 def read_and_decode(filename_queue):
@@ -51,16 +53,16 @@ def read_and_decode(filename_queue):
       serialized_example,
       # Defaults are not specified since both keys are required.
       features={
-          'image/encoded': tf.FixedLenFeature([], tf.string),
-          'image/class/label': tf.FixedLenFeature([], tf.int64),
+          'image_raw': tf.FixedLenFeature([], tf.string),
+          'label': tf.FixedLenFeature([], tf.int64),
       })
 
   # Convert from a scalar string tensor (whose single string has
   # length mnist.IMAGE_PIXELS) to a uint8 tensor with shape
   # [mnist.IMAGE_PIXELS].
-  image = tf.decode_raw(features['image/encoded'], tf.uint8)
+  image = tf.decode_raw(features['image_raw'], tf.uint8)
   image.set_shape([IMAGE_PIXELS])
-
+  print(str(image) + '-------------------------')
   # OPTIONAL: Could reshape into a 28x28 image and apply distortions
   # here.  Since we are not applying any distortions in this
   # example, and the next step expects the image to be flattened
@@ -70,7 +72,7 @@ def read_and_decode(filename_queue):
   image = tf.cast(image, tf.float32) * (1. / 255) - 0.5
 
   # Convert label from a scalar uint8 tensor to an int32 scalar.
-  label = tf.cast(features['image/class/label'], tf.int32)
+  label = tf.cast(features['label'], tf.int32)
 
   return image, label
 
@@ -127,60 +129,61 @@ def run_training():
                             num_epochs=FLAGS.num_epochs)
 
     # Build a Graph that computes predictions from the inference model.
-    #logits = mnist.inference(images,
-    #                         FLAGS.hidden1,
-    #                         FLAGS.hidden2)
+    logits = mnist.inference(images,
+                             FLAGS.hidden1,
+                             FLAGS.hidden2)
 
     # Add to the Graph the loss calculation.
-    # loss = mnist.loss(logits, labels)
+    loss = mnist.loss(logits, labels)
+    print('---------------------------- ' + str(logits))
 
     # Add to the Graph operations that train the model.
-    # train_op = mnist.training(loss, FLAGS.learning_rate)
+    train_op = mnist.training(loss, FLAGS.learning_rate)
 
     # The op for initializing the variables.
-    # init_op = tf.group(tf.global_variables_initializer(),
-    #                    tf.local_variables_initializer())
+    init_op = tf.group(tf.global_variables_initializer(),
+                       tf.local_variables_initializer())
 
     # Create a session for running operations in the Graph.
-    # sess = tf.Session()
+    sess = tf.Session()
 
     # Initialize the variables (the trained variables and the
     # epoch counter).
-    # sess.run(init_op)
+    sess.run(init_op)
 
     # Start input enqueue threads.
-    # coord = tf.train.Coordinator()
-    # threads = tf.train.start_queue_runners(sess=sess, coord=coord)
+    coord = tf.train.Coordinator()
+    threads = tf.train.start_queue_runners(sess=sess, coord=coord)
 
-    # try:
-    #    step = 0
-    #    while not coord.should_stop():
-    #      start_time = time.time()
+    try:
+       step = 0
+       while step != 3:
+         start_time = time.time()
 
          # Run one step of the model.  The return values are
          # the activations from the `train_op` (which is
          # discarded) and the `loss` op.  To inspect the values
          # of your ops or variables, you may include them in
          # the list passed to sess.run() and the value tensors
-    #    # will be returned in the tuple from the call.
-    #      _, loss_value = sess.run([train_op, loss])
-    #
-    #     duration = time.time() - start_time
-    #
-    #     # Print an overview fairly often.
-    #     if step % 100 == 0:
-    #       print('Step %d: loss = %.2f (%.3f sec)' % (step, loss_value,
-    #                                                  duration))
-    #     step += 1
-    #  except tf.errors.OutOfRangeError:
-    #    print('Done training for %d epochs, %d steps.' % (FLAGS.num_epochs, step))
-    #  finally:
-    #   # When done, ask the threads to stop.
-    #    coord.request_stop()
-    #
-    # # Wait for threads to finish.
-    # coord.join(threads)
-    # sess.close()
+         # will be returned in the tuple from the call.
+         _, loss_value = sess.run([train_op, loss])
+
+         #duration = time.time() - start_time
+
+         # Print an overview fairly often.
+         #if step % 100 == 0:
+         #  print('Step %d: loss = %.2f (%.3f sec)' % (step, loss_value,
+         #                                             duration))
+         step += 1
+    except tf.errors.OutOfRangeError:
+      print('Done training for %d epochs, %d steps.' % (FLAGS.num_epochs, step))
+    finally:
+      # When done, ask the threads to stop.
+       coord.request_stop()
+
+    # Wait for threads to finish.
+    coord.join(threads)
+    sess.close()
 
 
 def main(_):
@@ -216,13 +219,13 @@ if __name__ == '__main__':
   parser.add_argument(
       '--batch_size',
       type=int,
-      default=30,
+      default=1,
       help='Batch size.'
   )
   parser.add_argument(
       '--train_dir',
       type=str,
-      default='/tmp/data',
+      default='out',
       help='Directory with the training data.'
   )
   FLAGS, unparsed = parser.parse_known_args()
