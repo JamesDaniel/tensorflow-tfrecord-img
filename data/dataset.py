@@ -1,4 +1,6 @@
 # REFERENCE https://gist.github.com/ambodi/408301bc5bc07bc5afa8748513ab9477
+# REFERENCE http://warmspringwinds.github.io/tensorflow/tf-slim/2016/12/21/tfrecords-guide/
+# REFERENCE http://stackoverflow.com/questions/42509811/gentlely-way-to-read-tfrecords-data-into-batches
 ''''A module to read data'''
 
 from PIL import Image
@@ -18,9 +20,10 @@ class DataSet(object):
                  dtype=dtypes.float64,
                  reshape=True):
         if reshape:
+            print(images.shape[3])
             assert images.shape[3] == 1
-            images.reshape(images.shape[0],
-            images.shape[1] * images.shape[2])
+            #images.reshape(images.shape[0],
+            #images.shape[1] * images.shape[2])
 
         self._images = images
         self._num_examples = images.shape[0]
@@ -106,8 +109,17 @@ def _read_tfrecord(filename, num_examples):
             }
         )
         img = features['image_raw']
-        img = tf.image.decode_jpeg(img, channels=3)
-        img.set_shape([640, 486, 3])
+        img = tf.decode_raw(img, tf.uint8)
+
+        height = tf.cast(features['height'], tf.int32)
+        width = tf.cast(features['width'], tf.int32)
+
+        image_shape = tf.pack([height, width, 3])
+
+        image = tf.reshape(image, image_shape)
+
+        image_size_const = tf.constant((height, width, 3), dtype=tf.int32)
+
         label = tf.cast(features['label'], tf.int32)
 
         print(img)
