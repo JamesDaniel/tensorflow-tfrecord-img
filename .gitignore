@@ -22,3 +22,4 @@ out/
 
 # for images taken from tfrecords. see read_tf_records.py
 output/
+*.pyc

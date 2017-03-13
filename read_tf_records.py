@@ -28,16 +28,18 @@ def get_all_records(FILE):
    image, label, height, width, depth = read_and_decode(filename_queue)
    image = tf.image.decode_jpeg(image, channels=3)
 
-   init_op = tf.initialize_all_variables()
+   init_op = tf.global_variables_initializer()
    sess.run(init_op)
    coord = tf.train.Coordinator()
    threads = tf.train.start_queue_runners(coord=coord)
-   for i in range(3):
+   for i in range(3053):
      example, l = sess.run([image, label])
      img = Image.fromarray(example, 'RGB')
      img.save("output/" + str(i) + '-train.jpg')
 
-     print (example,l)
+     if not i % 100:
+         print('images processed: ' + str(i))
+     #print (example,l)
    coord.request_stop()
    coord.join(threads)
 
