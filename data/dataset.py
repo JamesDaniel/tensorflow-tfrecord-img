@@ -1,7 +1,7 @@
 # REFERENCE https://gist.github.com/ambodi/408301bc5bc07bc5afa8748513ab9477
 # REFERENCE http://warmspringwinds.github.io/tensorflow/tf-slim/2016/12/21/tfrecords-guide/
 # REFERENCE http://stackoverflow.com/questions/42509811/gentlely-way-to-read-tfrecords-data-into-batches
-''''A module to read data'''
+'''A module to read data'''
 
 from PIL import Image
 import numpy as np
