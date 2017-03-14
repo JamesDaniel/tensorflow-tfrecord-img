@@ -1,4 +1,4 @@
-
+# http://learningtensorflow.com/lesson3/
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
 import os
@@ -12,5 +12,5 @@ print(filename)
 # Print out its shape
 print(image.shape)
 
-#plt.imshow(image)
-#plt.show()
+plt.imshow(image)
+plt.show()
