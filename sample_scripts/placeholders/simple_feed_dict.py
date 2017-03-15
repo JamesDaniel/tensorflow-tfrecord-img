@@ -1,4 +1,4 @@
-# REFERENCE http://learningtensorflow.com/lesson2/
+# REFERENCE http://learningtensorflow.com/lesson4/
 import tensorflow as tf
 
 x = tf.placeholder("float", None)
