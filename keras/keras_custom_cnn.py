@@ -7,7 +7,10 @@ from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import backend as K
+import matplotlib.pyplot as plt
+import keras
 
+tensorboard = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
 # dimensions of our images.
 img_width, img_height = 640, 486
@@ -16,7 +19,7 @@ train_data_dir = '../images/train'
 validation_data_dir = '../images/validation'
 nb_train_samples = 3053
 nb_validation_samples = 763
-epochs = 50
+epochs = 2
 batch_size = 16
 
 if K.image_data_format() == 'channels_first':
@@ -40,6 +43,7 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Flatten())
 model.add(Dense(64))
 model.add(Activation('relu'))
+model.add(Dropout(0.5))
 model.add(Dense(1))
 model.add(Activation('sigmoid'))
 
@@ -70,9 +74,27 @@ validation_generator = test_datagen.flow_from_directory(
     batch_size=batch_size,
     class_mode='binary')
 
-model.fit_generator(
+history = model.fit_generator(
     train_generator,
     steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples // batch_size)
+    validation_steps=nb_validation_samples // batch_size,
+    callbacks=[tensorboard])
+
+# summarize history for accuracy
+plt.plot(history.history['acc'])
+plt.plot(history.history['val_acc'])
+plt.title('model accuracy')
+plt.ylabel('accuracy')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
+# summarize history for loss
+plt.plot(history.history['loss'])
+plt.plot(history.history['val_loss'])
+plt.title('model loss')
+plt.ylabel('loss')
+plt.xlabel('epoch')
+plt.legend(['train', 'test'], loc='upper left')
+plt.show()
