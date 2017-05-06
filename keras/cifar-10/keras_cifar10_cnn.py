@@ -2,6 +2,7 @@
 #https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
 #REFERENCE http://machinelearningmastery.com/display-deep-learning-model-training-history-in-keras/
 
+import keras
 from keras.preprocessing.image import ImageDataGenerator
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
@@ -9,7 +10,7 @@ from keras.layers import Activation, Dropout, Flatten, Dense
 from keras import backend as K
 import matplotlib.pyplot as plt
 
-
+tensorboard = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 # dimensions of our images.
 img_width, img_height = 32, 32
 
@@ -77,7 +78,8 @@ history = model.fit_generator(
     steps_per_epoch=nb_train_samples // batch_size,
     epochs=epochs,
     validation_data=validation_generator,
-    validation_steps=nb_validation_samples // batch_size)
+    validation_steps=nb_validation_samples // batch_size,
+    callbacks=[tensorboard])
 
 score = model.evaluate_generator(validation_generator, 1000)
 print("Accuracy = ", score[1])

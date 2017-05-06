@@ -15,6 +15,7 @@ from keras.layers import Conv2D, MaxPooling2D
 from keras import backend as K
 import matplotlib.pyplot as plt
 
+tensorboard = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 batch_size = 128
 num_classes = 10
 epochs = 12
@@ -66,7 +67,8 @@ history = model.fit(x_train, y_train,
           batch_size=batch_size,
           epochs=epochs,
           verbose=1,
-          validation_data=(x_test, y_test))
+          validation_data=(x_test, y_test),
+          callbacks=[tensorboard])
 score = model.evaluate(x_test, y_test, verbose=0)
 print('Test loss:', score[0])
 print('Test accuracy:', score[1])
