@@ -16,10 +16,10 @@ img_width, img_height = 32, 32
 
 train_data_dir = 'pro-data/train'
 validation_data_dir = 'pro-data/test'
-nb_train_samples = 2000
-nb_validation_samples = 800
-epochs = 2
-batch_size = 16
+nb_train_samples = 40000
+nb_validation_samples = 10000
+epochs = 20
+batch_size = 32
 
 if K.image_data_format() == 'channels_first':
     input_shape = (3, img_width, img_height)
