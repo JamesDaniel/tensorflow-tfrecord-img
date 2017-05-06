@@ -27,7 +27,7 @@ else:
     input_shape = (img_width, img_height, 3)
 
 model = Sequential()
-model.add(Dense(512, activation='relu', input_shape=(784,)))
+model.add(Dense(512, activation='relu', input_shape=input_shape))
 model.add(Dropout(0.2))
 model.add(Dense(512, activation='relu'))
 model.add(Dropout(0.2))

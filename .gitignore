@@ -24,3 +24,4 @@ out/
 output/
 *.pyc
 keras/cifar-10/pro-data
+images\ full\ size/
