@@ -23,3 +23,4 @@ out/
 # for images taken from tfrecords. see read_tf_records.py
 output/
 *.pyc
+keras/cifar-10/pro-data

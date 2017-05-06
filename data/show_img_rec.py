@@ -29,14 +29,20 @@ def _img_from_arr():
 
 def main(_):
     raw_image_data = _img_from_arr()
-    image = tf.placeholder("uint8", [None, None, 3])
-    y = tf.image.rot90(image)
+    image = tf.placeholder("uint8", [486, 640, 3])
+
+    #y = tf.reshape(image, [933120])
+    x = tf.placeholder(tf.float32, [None, 933120])
+    #y = tf.image.rot90(image)
+
+    y = tf.image.resize_images(image, [243, 320])
 
 
 
 
     with tf.Session() as session:
         result = session.run(y, feed_dict={image: raw_image_data})
+        print(result)
         plt.imshow(result)
         plt.show()
 

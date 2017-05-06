@@ -12,8 +12,8 @@ from keras import backend as K
 # dimensions of our images.
 img_width, img_height = 640, 486
 
-train_data_dir = 'images/train'
-validation_data_dir = 'images/validation'
+train_data_dir = '../images/train'
+validation_data_dir = '../images/validation'
 nb_train_samples = 3053
 nb_validation_samples = 763
 epochs = 50
@@ -56,7 +56,7 @@ train_datagen = ImageDataGenerator(
 
 # this is the augmentation configuration we will use for testing:
 # only rescaling
-test_datagen = ImageDataGenerator(rescale=1. / 255)
+test_datagen = ImageDataGenerator()
 
 train_generator = train_datagen.flow_from_directory(
     train_data_dir,
