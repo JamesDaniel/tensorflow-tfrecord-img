@@ -13,13 +13,13 @@ import keras
 tensorboard = keras.callbacks.TensorBoard(log_dir='./logs', histogram_freq=0, write_graph=True, write_images=False, embeddings_freq=0, embeddings_layer_names=None, embeddings_metadata=None)
 
 # dimensions of our images.
-img_width, img_height = 640, 486
+img_width, img_height = 50, 50
 
 train_data_dir = '../images/train'
 validation_data_dir = '../images/validation'
 nb_train_samples = 3053
 nb_validation_samples = 763
-epochs = 2
+epochs = 5
 batch_size = 16
 
 if K.image_data_format() == 'channels_first':
@@ -48,7 +48,7 @@ model.add(Flatten())
 model.add(Dense(512))
 model.add(Activation('relu'))
 model.add(Dropout(0.5))
-model.add(Dense(10))
+model.add(Dense(53))
 model.add(Activation('softmax'))
 
 model.compile(loss='sparse_categorical_crossentropy',
